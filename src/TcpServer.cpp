@@ -100,7 +100,7 @@ void TcpServer::newConnection(int sockfd, const sockaddr_in& peerAddr) {
 void TcpServer::removeConnection(const TcpConnectionPtr& conn) {
     // 可能在 io 线程中调用，投递到 main loop 统一删除
     mainLoop_->runInLoop([this, conn]{
-        connections_.erase(conn->id());
+        if (connections_.erase(conn->id()) == 0) return;  // 防止重复删除
         --connCount_;
         printf("[TcpServer] connection [%d] closed, total=%zu\n",
                conn->id(), connCount_.load());

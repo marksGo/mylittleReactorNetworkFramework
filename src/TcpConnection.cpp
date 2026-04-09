@@ -151,6 +151,7 @@ void TcpConnection::handleError() {
     int err = 0;
     socklen_t len = sizeof(err);
     ::getsockopt(sockfd_, SOL_SOCKET, SO_ERROR, &err, &len);
-    fprintf(stderr, "TcpConnection[%d] error: %s\n", id_, strerror(err));
+    if (err != 0)
+        fprintf(stderr, "TcpConnection[%d] error: %s\n", id_, strerror(err));
     handleClose();
 }
